@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:flutter/services.dart';
 import 'package:myapp/telas/tela_planeta.dart';
 
 import 'controles/controle_planeta.dart';
@@ -12,7 +11,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  //This widget is the root of your application
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -57,14 +55,13 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => TelaPlaneta(
-              isIncluir: true,
-              planeta: Planeta.vazio(),
-              onFinalizado: () {
-                _atualizarPlanetas();
-              },
-            ),
+        builder: (context) => TelaPlaneta(
+          isIncluir: true,
+          planeta: Planeta.vazio(),
+          onFinalizado: () {
+            _atualizarPlanetas();
+          },
+        ),
       ),
     );
   }
@@ -73,21 +70,50 @@ class _MyHomePageState extends State<MyHomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder:
-            (context) => TelaPlaneta(
-              isIncluir: false,
-              planeta: planeta,
-              onFinalizado: () {
-                _atualizarPlanetas();
-              },
-            ),
+        builder: (context) => TelaPlaneta(
+          isIncluir: false,
+          planeta: planeta,
+          onFinalizado: () {
+            _atualizarPlanetas();
+          },
+        ),
       ),
     );
   }
 
   void _excluirPlaneta(int id) async {
-    await _controlePlaneta.excluirPlaneta(id);
-    _atualizarPlanetas();
+    await _confirmarExclusao(context, id);
+  }
+
+  Future<void> _confirmarExclusao(BuildContext context, int id) async {
+    final bool? confirmacao = await showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Confirmar Exclusão'),
+          content: const Text('Tem certeza de que deseja excluir este planeta?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(false);
+              },
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+              child: const Text('Confirmar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirmacao == true) {
+      await _controlePlaneta.excluirPlaneta(id);
+      _atualizarPlanetas();
+    }
   }
 
   @override
@@ -120,7 +146,6 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         },
       ),
-
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _incluirPlaneta(context);

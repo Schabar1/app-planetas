@@ -1,6 +1,3 @@
-// ignore: unused_import
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:myapp/controles/controle_planeta.dart';
 import 'package:myapp/modelos/planeta.dart';
@@ -51,7 +48,6 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
     await _controlePlaneta.alterarPlaneta(_planeta);
   }
 
-  // ignore: unused_element
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
@@ -65,7 +61,7 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Dados do planeta foram ${widget.isIncluir ? 'incluidos' : 'alterados'} salvos com sucesso!',
+            'Dados do planeta foram ${widget.isIncluir ? 'incluídos' : 'alterados'} com sucesso!',
           ),
         ),
       );
@@ -91,7 +87,6 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
         title: const Text('Cadastrar Planeta'),
         elevation: 3,
       ),
-
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
         child: Form(
@@ -103,10 +98,10 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
                   controller: _nomeController,
                   decoration: const InputDecoration(
                     labelText: 'Nome',
-                  ), //inputdecoration
+                  ),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) {
-                    if (value == null || value.isEmpty || value.length < 2) {
+                    if (value == null || value.isEmpty || value.length < 3) {
                       return 'Por favor, informe o nome do planeta (3 ou mais caracteres)';
                     }
                     return null;
@@ -114,7 +109,7 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
                   onSaved: (value) {
                     _planeta.nome = value!;
                   },
-                ), //textformifield
+                ),
                 TextFormField(
                   controller: _tamanhoController,
                   decoration: const InputDecoration(
@@ -126,8 +121,9 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, informe o tamanho do planeta';
                     }
-                    if (double.tryParse(value) == null) {
-                      return 'insira um valor numerico válido';
+                    final tamanho = double.tryParse(value);
+                    if (tamanho == null || tamanho <= 0) {
+                      return 'Insira um valor numérico positivo';
                     }
                     return null;
                   },
@@ -146,8 +142,9 @@ class _TelaPlanetaState extends State<TelaPlaneta> {
                     if (value == null || value.isEmpty) {
                       return 'Por favor, insira a distância do planeta';
                     }
-                    if (double.tryParse(value) == null) {
-                      return 'insira um valor numerico válido';
+                    final distancia = double.tryParse(value);
+                    if (distancia == null || distancia <= 0) {
+                      return 'Insira um valor numérico positivo';
                     }
                     return null;
                   },
